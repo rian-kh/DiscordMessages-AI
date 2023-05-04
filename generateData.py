@@ -1,41 +1,67 @@
 import zipfile
 import csv
 
-# Create zip file object of package, and path object relating to zip
-zip = zipfile.ZipFile("package.zip", "r")
-path = zipfile.Path(zip, "package/messages/")
+def textContainsSpaces(text):
+    for item in text:
+        if (item == ''):
+            return True
 
-# Create initial data file to store messages
-file = open("data.txt", "w")
-# Loop through each folder in the messages directory
-i = 0
+    return False
+
+def generateDataset(zipPath):
+    # Create zip file object of package, and path object relating to zip
+
+    zip = zipfile.ZipFile(zipPath, "r")
+    path = zipfile.Path(zip, "messages/")
+
+
+    # Create initial data file to store messages
+    file = open("data.txt", "w", encoding="utf8")
+
+
+    # Used to ensure that no blank lines are left during the writing process
+    firstRun = True
+
+    # Loop through each item in the messages directory
+    for channel in path.iterdir():
+
+        # If current item is a file (not a messages directory), continue to the next folder
+        if (channel.is_file()): continue
+
+        # Create CSV reader for each channel folder's messages
+        file = channel.joinpath("messages.csv")
+        reader = csv.reader(file.open("r", encoding="utf8"))
 
 
 
-for channel in path.iterdir():
-    i += 1
+        # Skip initial line of CSV (Contents, etc)
+        next(reader)
 
-    # Create CSV reader for each channel's messages
-    file = channel.joinpath("messages.csv")
-    reader = csv.reader(file.open("r"))
 
-    # Skip initial line of CSV (Contents, etc)
-    next(reader)
+        # Go through each line of current CSV and output to data file
+        for row in reader:
+            with open("data.txt", 'a', encoding="utf8") as dataFile:
 
-    print("Channel " + str(i) + ":")
+                # Clean up text
+                text = row[2].rstrip().lstrip().strip().splitlines()
 
-    j = 0
+                # Clean up empty lines in multi-line messages
+                while (textContainsSpaces(text)):
+                    for line in text:
+                        if (line == ''):
+                            text.remove(line)
 
-    # Go through each line of current CSV and output to data file
-    for row in reader:
-        j += 1
-        print("Line " + str(j) + ": " + row[2])
+                # Only write the starting newline character for lines that aren't the first
+                # (No blank lines will be left, can cause errors in training due to encoding)
+                for line in text:
+                    if not firstRun:
+                        dataFile.write("\n")
+                    else:
+                        firstRun = False
 
-        with open("data.txt", 'a') as dataFile:
-            dataFile.write(row[2])
-            dataFile.write("\n")
+                    dataFile.write(line)
 
-    print("\n")
+    # Close zip file
+    zip.close()
 
-# Close zip file
-zip.close()
+
