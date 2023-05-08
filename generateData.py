@@ -1,5 +1,6 @@
 import zipfile
 import csv
+import os
 
 def textContainsSpaces(text):
     for item in text:
@@ -16,7 +17,10 @@ def generateDataset(zipPath):
 
 
     # Create initial data file to store messages
-    file = open("data.txt", "w", encoding="utf8")
+    if not os.path.exists('data/'):
+        os.makedirs('data/')
+
+    file = open("data/data.txt", "w", encoding="utf8")
 
 
     # Used to ensure that no blank lines are left during the writing process
@@ -40,7 +44,7 @@ def generateDataset(zipPath):
 
         # Go through each line of current CSV and output to data file
         for row in reader:
-            with open("data.txt", 'a', encoding="utf8") as dataFile:
+            with open("data/data.txt", 'a', encoding="utf8") as dataFile:
 
                 # Clean up text
                 text = row[2].rstrip().lstrip().strip().splitlines()
@@ -52,7 +56,7 @@ def generateDataset(zipPath):
                             text.remove(line)
 
                 # Only write the starting newline character for lines that aren't the first
-                # (No blank lines will be left, can cause errors in training due to encoding)
+                # (No blank lines will be left, can cause errors in training due to encoding?)
                 for line in text:
                     if not firstRun:
                         dataFile.write("\n")
@@ -63,5 +67,4 @@ def generateDataset(zipPath):
 
     # Close zip file
     zip.close()
-
 

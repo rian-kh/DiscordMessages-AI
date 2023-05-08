@@ -1,4 +1,14 @@
+import os.path
+
+print("Starting message generation...")
+if not os.path.exists('checkpoint/run1'):
+    print("No model found. Please train a model first.")
+    exit()
+
 import gpt_2_simple as gpt2
+import sys
+
+print("Starting TensorFlow session...")
 
 
 
@@ -8,59 +18,28 @@ gpt2.load_gpt2(sess)
 # Leave blank for most recent
 
 
+prefix = sys.argv[1]
+sampleNum = int(sys.argv[2])
+sampleLen = int(sys.argv[3])
+batchSize = int(sys.argv[4])
+temperature = float(sys.argv[5])
+topK = int(sys.argv[6])
+topP = float(sys.argv[7])
 
 
-x = input("Modes:\n1. Generate with number of samples as input\n2. Generate with a prompt to start generation with\n\nEnter nothing to exit.\n\nEnter mode number: ")
+gpt2.generate(sess,
+              prefix=prefix,
+              nsamples=sampleNum,
+              length=sampleLen,
+              batch_size=batchSize,
+              temperature=temperature,
+              top_k=topK,
+              top_p=topP)
 
-if not (x == "1" or x == "2"):
-    exit()
-
-args = {
-        "sess": sess,
-        "run_name":'run1',
-        "checkpoint_dir":'checkpoint',
-        "model_name":None,
-        "model_dir":'models',
-        "sample_dir":'samples',
-        "return_as_list":False,
-        "truncate":None,
-        "destination_path":None,
-        "sample_delim":'='*20 +'\n',
-        "prefix":None,
-        "seed":None,
-        "nsamples":1,
-        "batch_size":1,
-        "length":100,
-        "temperature":0.7,
-        "top_k":0,
-        "top_p":0.0,
-        "include_prefix":True
-        }
+print("\nSample generation complete.")
 
 
-if (x == "1"):
-    while (True):
-        inp = input("\nEnter number of samples, enter nothing to quit: ")
-        print("")
-        if (inp == "" or not inp.isdigit()):
-            print("A")
-            break;
 
-        args.update({"nsamples": int(inp)})
-        gpt2.generate(**args)
-        print("\n")
-
-elif (x == "2"):
-    while (True):
-        inp = input("\nEnter prompt to start generation with, enter nothing to quit: ")
-        if (inp == ""):
-            break;
-
-        print("")
-        args.update({"prefix": inp})
-        args.update({"include_prefix": False})
-        gpt2.generate(**args)
-        print("\n")
 
 
 
