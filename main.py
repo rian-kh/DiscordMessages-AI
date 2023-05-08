@@ -1,7 +1,7 @@
 # Code adapted from:
 # Run other python scripts: https://stackoverflow.com/questions/57200315/connect-process-a-script-to-pysimplegui-button/57228060#57228060
 
-import subprocess
+import multiprocessing as mp
 import sys
 import PySimpleGUI as sg
 import signal
@@ -9,21 +9,14 @@ import threading
 import generateData
 import os
 import shutil
+import gpt_2_simple
 
-
+global p
+p = mp.Process()
 # Function for running training
 def runTraining(args, window):
-    global p
-    
-    p = subprocess.Popen("python trainGPT2.py " + args, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
-                         shell=True)
+    p = mp.Process(target=exec(open('trainGPT2.py').read(), args), args=args)
 
-    output = ''
-    for line in p.stdout:
-        line = line.decode(errors='replace' if (sys.version_info) < (3, 5) else 'backslashreplace').rstrip()
-        output += line
-        print(line)
-        window.Refresh() if window else None
 
 
 # Function for running message generation
@@ -151,6 +144,8 @@ window = sg.Window('Discord Messages to AI', layout, size=(700, 700))
 
 trainingStarted = False
 generationStarted = False
+global test
+test = "Hi"
 
 # Event loop
 while True:
@@ -204,16 +199,21 @@ while True:
 
             trainingStarted = True
 
-            args = "\"" + values['_modelsize_'] + "\"" + " " + values['_steps_'] + " " + values['_learningrate_'] + \
-                   " " + values['_sampleevery_'] + " " + values['_batchsize_']
+            args = {'modelSize':values['_modelsize_'], 'steps':int(values['_steps_']),
+                    'learningRate':float(values['_learningrate_']), 'sampleEvery':int(values['_sampleevery_']),
+                    'batchSize':int(values['_batchsize_'])}
 
+            print(args)
             programComplete = False
             thread = threading.Thread(target=runTraining, args=[args, window])
             thread.setDaemon(True)
             thread.start()
 
     if event == 'Save and end training' and trainingStarted:
-        p.send_signal(signal.SIGINT)
+        try:
+            os.kill(p.ident, signal.SIGINT)
+        except Exception as e:
+            print(e)
 
         trainingStarted = False
 
