@@ -1,11 +1,13 @@
-# Code adapted from gpt-2-simple: Usage on github.
+    # Code adapted from gpt-2-simple: Usage on github.
 
 
 
 print("Starting training script...")
 import os
 
-if not (os.path.exists('data/data.txt')):
+scriptDir = os.path.dirname(os.path.realpath(__file__))
+
+if not (os.path.exists(scriptDir + '/data/data.txt')):
     print("No dataset found. Please generate a dataset")
     exit()
 
@@ -21,9 +23,9 @@ batchSize = int(sys.argv[5])
 
 
 # Check if model download is FULLY complete
-if not os.path.exists('models/' + model_name + '/downloadComplete'):
+if not os.path.exists(scriptDir + '/models/' + model_name + '/downloadComplete'):
     print("Downloading "+ model_name+ " model...")
-    gpt2.download_gpt2(model_name=model_name)   # model is saved into current directory under /models/124M/
+    gpt2.download_gpt2(model_dir=scriptDir+"/models", model_name=model_name)   # model is saved into current directory under /models/124M/
     print(model_name + " model downloaded.")
 
 
@@ -35,7 +37,9 @@ print("Starting finetuning...")
 
 
 gpt2.finetune(sess,
-              "data/data.txt",
+              scriptDir + "/data/data.txt",
+              model_dir=scriptDir+"/models",
+              checkpoint_dir=scriptDir+"/checkpoint",
               model_name=model_name,
               steps=steps,
               batch_size=batchSize,
@@ -46,6 +50,5 @@ gpt2.finetune(sess,
               save_every=100,
               learning_rate=learningRate
               )   # steps is max number of training steps
-
 
 

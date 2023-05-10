@@ -1,7 +1,11 @@
-import os.path
 
 print("Starting message generation...")
-if not os.path.exists('checkpoint/run1'):
+
+import os
+
+scriptDir = os.path.dirname(os.path.realpath(__file__))
+
+if not os.path.exists(scriptDir + '/checkpoint/run1'):
     print("No model found. Please train a model first.")
     exit()
 
@@ -29,6 +33,8 @@ topP = float(sys.argv[7])
 
 gpt2.generate(sess,
               prefix=prefix,
+              model_dir=scriptDir+"/models",
+              checkpoint_dir=scriptDir+"/checkpoint",
               nsamples=sampleNum,
               length=sampleLen,
               batch_size=batchSize,
@@ -49,7 +55,6 @@ print("\nSample generation complete.")
 
 # Generation: Use short length and more nsamples for more speed
 # temperature: 0.0 - 1.0. Higher value = More random. 0.7 is somewhat normal
-
 
 
 

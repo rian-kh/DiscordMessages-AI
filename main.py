@@ -10,12 +10,13 @@ import generateData
 import os
 import shutil
 
+scriptDir = os.path.dirname(os.path.realpath(__file__))
 
 # Function for running training
 def runTraining(args, window):
     global p
 
-    p = subprocess.Popen("python trainGPT2.py " + args, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
+    p = subprocess.Popen("python " + scriptDir + "/trainGPT2.py " + args, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
                          shell=True)
 
     output = ''
@@ -30,7 +31,7 @@ def runTraining(args, window):
 def runMessage(args, window):
     global q
 
-    q = subprocess.Popen("python generateMessage.py " + args, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
+    q = subprocess.Popen("python " + scriptDir + "/generateMessage.py " + args, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
                          stdin=subprocess.PIPE,
                          shell=True)
 
@@ -44,10 +45,10 @@ def runMessage(args, window):
 
 # Function for finding model steps
 def findModelSteps():
-    if not os.path.exists('checkpoint/run1'):
+    if not os.path.exists(scriptDir + '/checkpoint/run1'):
         return None
     else:
-        for file in os.listdir('checkpoint/run1'):
+        for file in os.listdir(scriptDir + "/checkpoint/run1"):
 
             # Find model file and get steps
             if file.startswith('model') and file.endswith('.index'):
@@ -122,7 +123,7 @@ trainTab = [
 ]
 
 # Check if dataset is already generated
-if os.path.exists('data/data.txt'):
+if os.path.exists(scriptDir + 'data/data.txt'):
     trainTab[0] = [sg.Text('Enter path to Discord package (.zip): '), sg.Text('Dataset found.', key='_foundData_')]
 else:
     trainTab[0] = [sg.Text('Enter path to Discord package (.zip): '), sg.Text('Dataset not found.', key='_foundData_')]
@@ -142,7 +143,7 @@ layout = [
         sg.Tab("Test model", testTab, key='_testTab_')
     ]], key='_tabGroup_')],
 
-    [sg.Output(size=(70, 20), font=('Arial', 18), key='_output_')]
+    [sg.Multiline(size=(70, 20), font=('Arial', 18), key='_output_', reroute_stdout=True)]
 
 ]
 
@@ -184,7 +185,7 @@ while True:
         print()
 
     # Always check for dataset availability
-    if os.path.exists('data/data.txt'):
+    if os.path.exists(scriptDir + '/data/data.txt'):
         window['_foundData_'].update("Dataset found.")
     else:
         window['_foundData_'].update("Dataset not found.")
@@ -218,13 +219,13 @@ while True:
 
         trainingStarted = False
 
-    if event == 'Delete model' and not trainingStarted and not generationStarted and os.path.exists('checkpoint/run1'):
+    if event == 'Delete model' and not trainingStarted and not generationStarted and os.path.exists(scriptDir + '/checkpoint/run1'):
         option = sg.popup_yes_no(
             'Are you sure you want to delete the trained model? \nYou will have to retrain from step 0.',
             title='Confirm model deletion', keep_on_top=True)
 
         if option == 'Yes':
-            shutil.rmtree('checkpoint/run1')
+            shutil.rmtree(scriptDir + '/checkpoint/run1')
             sg.popup('Model deleted.', keep_on_top=True)
 
     if event == 'Generate dataset':

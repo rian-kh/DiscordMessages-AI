@@ -2,6 +2,8 @@ import zipfile
 import csv
 import os
 
+scriptDir = os.path.dirname(os.path.realpath(__file__))
+
 def textContainsSpaces(text):
     for item in text:
         if (item == ''):
@@ -17,10 +19,10 @@ def generateDataset(zipPath):
 
 
     # Create initial data file to store messages
-    if not os.path.exists('data/'):
-        os.makedirs('data/')
+    if not os.path.exists(scriptDir + '/data/'):
+        os.makedirs(scriptDir + '/data/')
 
-    file = open("data/data.txt", "w", encoding="utf8")
+    file = open(scriptDir + "/data/data.txt", "w", encoding="utf8")
 
 
     # Used to ensure that no blank lines are left during the writing process
@@ -44,7 +46,7 @@ def generateDataset(zipPath):
 
         # Go through each line of current CSV and output to data file
         for row in reader:
-            with open("data/data.txt", 'a', encoding="utf8") as dataFile:
+            with open(scriptDir + "/data/data.txt", 'a', encoding="utf8") as dataFile:
 
                 # Clean up text
                 text = row[2].rstrip().lstrip().strip().splitlines()
@@ -67,4 +69,3 @@ def generateDataset(zipPath):
 
     # Close zip file
     zip.close()
-
