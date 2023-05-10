@@ -14,7 +14,7 @@ import shutil
 # Function for running training
 def runTraining(args, window):
     global p
-    
+
     p = subprocess.Popen("python trainGPT2.py " + args, stderr=subprocess.PIPE, stdout=subprocess.PIPE,
                          shell=True)
 
@@ -128,7 +128,6 @@ else:
     trainTab[0] = [sg.Text('Enter path to Discord package (.zip): '), sg.Text('Dataset not found.', key='_foundData_')]
 
 # Check if model is already generated
-
 stepText = findModelSteps()
 if stepText is None:
     trainTab[5].append(sg.Text("Model not found.", key='_modelFound_'))
@@ -167,6 +166,7 @@ while True:
         exit
         break
 
+    # Always check for model steps
     if not stepText == findModelSteps():
         stepText = findModelSteps()
         if stepText is None:
@@ -183,6 +183,7 @@ while True:
         window.find_element('_output_').Update('')
         print()
 
+    # Always check for dataset availability
     if os.path.exists('data/data.txt'):
         window['_foundData_'].update("Dataset found.")
     else:
