@@ -1,9 +1,9 @@
 # DiscordMessages-AI
 A program that uses your Discord message information from your Discord Data Package to create AI-generated messages based on GPT-2. 
 
-<img width="746" alt="Screen Shot 2023-05-09 at 10 54 34 PM" src="https://github.com/rian-kh/DiscordMessages-AI/assets/128095876/bfe08e71-a6e1-43b5-bf4c-d7f35a5a366e">
+<img width="450" alt="Screen Shot 2023-05-09 at 10 54 34 PM" src="https://github.com/rian-kh/DiscordMessages-AI/assets/128095876/bfe08e71-a6e1-43b5-bf4c-d7f35a5a366e">
 
-<img width="753" alt="Screen Shot 2023-05-09 at 8 48 52 PM" src="https://github.com/rian-kh/DiscordMessages-AI/assets/128095876/6a149f94-7cc5-4fbd-a338-511df8de0ea2">
+<img width="450" alt="Screen Shot 2023-05-09 at 8 48 52 PM" src="https://github.com/rian-kh/DiscordMessages-AI/assets/128095876/6a149f94-7cc5-4fbd-a338-511df8de0ea2">
 
 **Important Notes:**
 - This program uses [gpt-2-simple](https://github.com/minimaxir/gpt-2-simple/) and [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI).
