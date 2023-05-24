@@ -9,7 +9,8 @@ A program that uses your Discord message information from your Discord Data Pack
 - This program uses [gpt-2-simple](https://github.com/minimaxir/gpt-2-simple/) and [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI).
 - gpt_2_simple/gpt_2.py was modified to display steps of training/generation **(Issue #1)**
 - Do NOT exit/terminate training during saving, as this has a chance of reverting **all** training done no matter the steps.
--   Process management is REALLY bad in this, make sure to check for any python3.9 processes still running after exiting!!!
+- Process management is REALLY bad in this, make sure to check for any python3.9 processes still running after exiting!!!
+- Does not work properly on Windows, only macOS (Apple Silicon) works for sure (See [Issue #14](https://github.com/rian-kh/DiscordMessages-AI/issues/14))
 
 ## Installation
 
